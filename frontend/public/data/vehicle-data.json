@@ -1,4 +1,0 @@
-[
-  { "id": 1, "timestamp": "2022-07-10 15:00:00.000", "speed": 36, "odometer": 10666, "soc": 0.345, "elevation": 972, "shift_state": "D" },
-  { "id": 2, "timestamp": "2022-08-10 07:33:01.000", "speed": null, "odometer": 23435, "soc": 0.766, "elevation": 232, "shift_state": null }
-]

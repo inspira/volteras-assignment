@@ -1,36 +1,34 @@
 import './App.css';
-import Table from './Table'
 import React, { useState, useEffect } from 'react';
+import Table from './Table';
 
 const columns = [
   { accessor: 'timestamp', label: 'Timestamp' },
   { accessor: 'speed', label: 'Speed (km/h)' },
   { accessor: 'odometer', label: 'Odometer (km)' },
-  { accessor: 'soc', label: 'State of Charge' },
+  { accessor: 'soc', label: 'State of Charge', format: (value) => `${value}%` },
   { accessor: 'elevation', label: 'Elevation (m)' },
   { accessor: 'shift_state', label: 'Shift State' },
 ];
 
-function App() {
+// TODO: move to a config file
+const API_PATH = '//localhost:8000/api/v1';
 
+function App() {
   const [data, setData] = useState();
 
   function loadData() {
-    fetch("data/vehicle-data.json", { headers : { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-       }}).then(response => response.json())
-        .then(jsonData => setData(jsonData))
-        .catch((error) => {
-          console.error(error);
-        });
+    fetch(`${API_PATH}/vehicle_data`)
+      .then((response) => response.json())
+      .then((jsonData) => setData(jsonData));
   }
 
+  // This is calling the API twice because of a new behavior of
+  // React 18 when React.StrictMode is enabled in development mode
+  // A fix is provided at https://beta.reactjs.org/learn/synchronizing-with-effects
   useEffect(() => {
-    if(data === undefined){
-      loadData()
-    }
-  }, [data])
+    loadData();
+  }, []);
 
   return data && (
     <div className="App">
