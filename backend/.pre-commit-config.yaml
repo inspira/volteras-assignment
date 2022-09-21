@@ -27,6 +27,7 @@ repos:
         args:
           - "--max-line-length=120"
           - "--exclude=**/migrations/*"
+          - "--ignore=B008" # See https://github.com/tiangolo/fastapi/issues/1522
         additional_dependencies:
           [
             "flake8-bugbear",

@@ -1,18 +1,18 @@
-import "./App.css";
-import React, { useState, useEffect } from "react";
-import Table from "./Table";
+import './App.css';
+import React, { useState, useEffect } from 'react';
+import Table from './Table';
 
 const columns = [
-  { accessor: "timestamp", label: "Timestamp" },
-  { accessor: "speed", label: "Speed (km/h)" },
-  { accessor: "odometer", label: "Odometer (km)" },
-  { accessor: "soc", label: "State of Charge", format: (value) => `${value}%` },
-  { accessor: "elevation", label: "Elevation (m)" },
-  { accessor: "shift_state", label: "Shift State" },
+  { accessor: 'timestamp', label: 'Timestamp' },
+  { accessor: 'speed', label: 'Speed (km/h)' },
+  { accessor: 'odometer', label: 'Odometer (km)' },
+  { accessor: 'soc', label: 'State of Charge', format: (value) => `${value}%` },
+  { accessor: 'elevation', label: 'Elevation (m)' },
+  { accessor: 'shift_state', label: 'Shift State' },
 ];
 
 // TODO: move to a config file
-const API_PATH = "//localhost:8000/api/v1";
+const API_PATH = '//localhost:8000/api/v1';
 
 function App() {
   const [data, setData] = useState();

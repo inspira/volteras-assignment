@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 fastapi = "0.85.x"
+requests = "2.28.x"
+sqlalchemy = "1.4.x"
+psycopg2-binary = "2.9.x"
 
 [dev-packages]
 pylint = "*"

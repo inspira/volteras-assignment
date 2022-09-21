@@ -20,3 +20,7 @@ npx eslint src --ext .jsx --fix
 ```
 
 TODO: run it as a git commit hook
+
+## Table component
+
+The `src/Table.jsx` component has been extracted from https://www.taniarascia.com/front-end-tables-sort-filter-paginate/

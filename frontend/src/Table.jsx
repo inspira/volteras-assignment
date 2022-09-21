@@ -1,3 +1,5 @@
+// Ref: https://www.taniarascia.com/front-end-tables-sort-filter-paginate/
+
 import PropTypes from 'prop-types';
 import React from 'react';
 

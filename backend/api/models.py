@@ -6,19 +6,20 @@ from typing import Optional
 
 
 class ShiftStateEnum(str, Enum):
+    NULL = "NULL"
     DRIVE = "D"
     PARK = "P"
     REVERSE = "R"
 
 
-class EvDataEntry(BaseModel):
-    vehicle_id: int
+class EvDataPoint(BaseModel):
+    vehicle_id: str
     timestamp: datetime
     speed: Optional[int]
     odometer: Decimal
     soc: int
     elevation: int
-    shift_state: Optional[ShiftStateEnum]
+    shift_state: ShiftStateEnum
 
     def __init__(self, **data):
         if data["speed"] == "NULL":
