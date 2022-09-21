@@ -39,7 +39,7 @@ function App() {
       <header className="App-header">
         <h1>Volteras Vehicle Data</h1>
       </header>
-      <Table rows={data ?? []} columns={columns} />
+      <Table rows={data || []} columns={columns} />
       <p>{error}</p>
     </div>
   );
