@@ -65,3 +65,4 @@ async def post_vehicle_data_point(
     Saves a data point for a vehicle in the database
     """
     repository.save_vehicle_data_point(entry=entry, db=db)
+
