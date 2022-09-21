@@ -2,16 +2,13 @@
 Vehicle data API
 """
 import logging
-from fastapi import FastAPI, status, Depends
+from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
 
 from config import API_DEFAULT_LISTING_LIMIT, ALLOWED_ORIGIN
-from persistence import repository, models
-from persistence.database import get_db, engine
 from schemas import EvDataEntry
+from persistence import repository
 
-models.Base.metadata.create_all(bind=engine)
 
 log = logging.getLogger(__name__)
 
@@ -39,15 +36,13 @@ app.add_middleware(
     "/api/v1/vehicle_data/",
     operation_id="list_vehicle_data_points",
 )
-async def list_vehicle_data_points(
-    limit: int = API_DEFAULT_LISTING_LIMIT, db: Session = Depends(get_db)
-):
+async def list_vehicle_data_points(limit: int = API_DEFAULT_LISTING_LIMIT):
     """
     Retrieves (GET) a list of generated data for a given vehicle_id, filtered by
     initial and final timestamps (optional). This endpoint should support pagination,
     sorting, and a way to limit the number of data returned.
     """
-    return repository.list_vehicle_data_points(limit=limit, db=db)
+    return repository.list_vehicle_data_points(limit=limit)
 
 
 @app.post(
@@ -58,9 +53,8 @@ async def list_vehicle_data_points(
 )
 async def post_vehicle_data_point(
     entry: EvDataEntry,
-    db: Session = Depends(get_db),
 ):
     """
     Saves a data point for a vehicle in the database
     """
-    repository.save_vehicle_data_point(entry=entry, db=db)
+    repository.save_vehicle_data_point(entry=entry)
