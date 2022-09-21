@@ -1,8 +1,15 @@
+"""
+SqlAlchemy models
+"""
 from sqlalchemy import Column, Integer, String, DateTime, Float
 from .database import Base
 
 
+# pylint: disable=too-few-public-methods
 class EvDataPointRecord(Base):
+    """
+    Represents a database record
+    """
     __tablename__ = "ev_data_points"
 
     id = Column(Integer, primary_key=True, index=True)

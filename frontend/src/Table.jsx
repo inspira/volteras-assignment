@@ -34,7 +34,11 @@ Table.propTypes = {
       label: PropTypes.string,
     }),
   ).isRequired,
-  rows: PropTypes.array.isRequired,
+  rows: PropTypes.any,
+};
+
+Table.defaultProps = {
+  rows: [],
 };
 
 export default Table;

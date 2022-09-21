@@ -1,6 +1,18 @@
 version: "3.9"
 
 services:
+  api:
+    build:
+      context: .
+    environment:
+      SQLALCHEMY_DATABASE_URL: postgresql+psycopg2://evdata:evdata@postgres:5432/evdata
+    ports:
+      - "3000:3000"
+    networks:
+      - evdata
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:14
     environment:

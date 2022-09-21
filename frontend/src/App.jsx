@@ -20,10 +20,15 @@ function App() {
 
   function loadData() {
     fetch(`${API_PATH}/vehicle_data`)
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status !== 200) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+        return response.json();
+      })
       .then((jsonData) => setData(jsonData))
       .catch((err) => {
-        setError(`Failed to load data: ${err}`);
+        setError(`${err}`);
       });
   }
 
@@ -39,7 +44,7 @@ function App() {
       <header className="App-header">
         <h1>Volteras Vehicle Data</h1>
       </header>
-      <Table rows={data || []} columns={columns} />
+      <Table rows={data} columns={columns} />
       <p>{error}</p>
     </div>
   );
