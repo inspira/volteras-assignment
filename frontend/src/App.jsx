@@ -16,28 +16,31 @@ const API_PATH = '//localhost:8000/api/v1';
 
 function App() {
   const [data, setData] = useState();
+  const [error, setError] = useState();
 
   function loadData() {
     fetch(`${API_PATH}/vehicle_data`)
       .then((response) => response.json())
-      .then((jsonData) => setData(jsonData));
+      .then((jsonData) => setData(jsonData))
+      .catch((err) => {
+        setError(`Failed to load data: ${err}`);
+      });
   }
 
   // This is calling the API twice because of a new behavior of
   // React 18 when React.StrictMode is enabled in development mode
-  // A fix is provided at https://beta.reactjs.org/learn/synchronizing-with-effects
+  // See also: https://beta.reactjs.org/learn/synchronizing-with-effects
   useEffect(() => {
     loadData();
   }, []);
 
-  return data && (
+  return (
     <div className="App">
       <header className="App-header">
-        <h1>
-          Volteras Vehicle Data
-        </h1>
+        <h1>Volteras Vehicle Data</h1>
       </header>
-      <Table rows={data} columns={columns} />
+      <Table rows={data ?? []} columns={columns} />
+      <p>{error}</p>
     </div>
   );
 }
