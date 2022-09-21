@@ -13,7 +13,7 @@ class ShiftStateEnum(str, Enum):
 
 
 class EvDataEntry(BaseModel):
-    vehicle_id: int
+    vehicle_id: str
     timestamp: datetime
     speed: Optional[int]
     odometer: Decimal
@@ -34,4 +34,3 @@ class EvDataEntry(BaseModel):
 
     class Config:
         orm_mode = True
-

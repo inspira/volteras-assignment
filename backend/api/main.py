@@ -4,13 +4,14 @@ Vehicle data API
 import logging
 from fastapi import FastAPI, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from models import EvDataPoint
-from persistence import repository, schema
-from config import API_DEFAULT_LISTING_LIMIT
-from persistence.database import get_db, engine
 from sqlalchemy.orm import Session
 
-schema.Base.metadata.create_all(bind=engine)
+from config import API_DEFAULT_LISTING_LIMIT, ALLOWED_ORIGIN
+from persistence import repository, models
+from persistence.database import get_db, engine
+from schemas import EvDataEntry
+
+models.Base.metadata.create_all(bind=engine)
 
 log = logging.getLogger(__name__)
 
@@ -21,9 +22,8 @@ app = FastAPI(
     openapi_tags=[{"name": "evdata"}],
 )
 
-
 origins = [
-    "http://localhost:3000",
+    ALLOWED_ORIGIN,
 ]
 
 app.add_middleware(
@@ -36,12 +36,11 @@ app.add_middleware(
 
 
 @app.get(
-    "/api/v1/vehicle_data",
+    "/api/v1/vehicle_data/",
     operation_id="list_vehicle_data_points",
 )
 async def list_vehicle_data_points(
-    limit: int = API_DEFAULT_LISTING_LIMIT,
-    db: Session = Depends(get_db)
+    limit: int = API_DEFAULT_LISTING_LIMIT, db: Session = Depends(get_db)
 ):
     """
     Retrieves (GET) a list of generated data for a given vehicle_id, filtered by
@@ -58,11 +57,10 @@ async def list_vehicle_data_points(
     operation_id="post_vehicle_data_point",
 )
 async def post_vehicle_data_point(
-    entry: EvDataPoint,
+    entry: EvDataEntry,
     db: Session = Depends(get_db),
 ):
     """
     Saves a data point for a vehicle in the database
     """
     repository.save_vehicle_data_point(entry=entry, db=db)
-

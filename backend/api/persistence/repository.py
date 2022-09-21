@@ -1,5 +1,5 @@
 import logging
-from .schema import EvDataPointRecord
+from .models import EvDataPointRecord
 
 
 log = logging.getLogger(__name__)
