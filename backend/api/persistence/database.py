@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Sqlachemy engine and session management
 """

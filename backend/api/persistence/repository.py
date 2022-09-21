@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Repository abstraction implemented with sqlalchemy
 Allows for better separation of concerns between the API services and the database logic
@@ -22,7 +23,7 @@ def list_vehicle_data_points(
 
     # We need to confirm if 'vehicle_id' is a sensitive info before adding it to the log
     log.debug(
-        "Retrieving vehicle data points - Timestamps: [%s - %s], Limit: %d",
+        'Retrieving vehicle data points - Timestamps: [%s - %s], Limit: %d',
         from_timestamp,
         to_timestamp,
         limit,
@@ -56,7 +57,7 @@ def save_vehicle_data_point(entry):
     """
     Saves a vehicle data point into the database
     """
-    log.debug("Saving vehicle data point into DB")
+    log.debug('Saving vehicle data point into DB')
 
     record = EvDataPointRecord(**entry.dict())
     db.add(record)

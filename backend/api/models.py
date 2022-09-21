@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 API Models using pydantic syntax
 """
@@ -14,10 +15,10 @@ class ShiftStateEnum(str, Enum):
     """
     Represents the possible values for the shift state of an EV
     """
-    NULL = "NULL"
-    DRIVE = "D"
-    PARK = "P"
-    REVERSE = "R"
+    NULL = 'NULL'
+    DRIVE = 'D'
+    PARK = 'P'
+    REVERSE = 'R'
 
 
 @dataclass
@@ -38,8 +39,8 @@ class EvDataEntry(BaseModel):
         Save speed as a nullable integer in the DB
         so we can make calculations on them
         """
-        if data["speed"] == "NULL":
-            data.pop("speed")
+        if data['speed'] == 'NULL':
+            data.pop('speed')
         super().__init__(**data)
 
     @classmethod
@@ -48,7 +49,7 @@ class EvDataEntry(BaseModel):
         Retrieves a NULL value from DB and sets it as string
         """
         row = super().from_orm(obj)
-        row.speed = row.speed or "NULL"
+        row.speed = row.speed or 'NULL'
         return row
 
     @dataclass

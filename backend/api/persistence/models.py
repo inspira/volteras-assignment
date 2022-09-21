@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 SqlAlchemy models
 """
@@ -10,7 +11,7 @@ class EvDataPointRecord(Base):
     """
     Represents a database record
     """
-    __tablename__ = "ev_data_points"
+    __tablename__ = 'ev_data_points'
 
     id = Column(Integer, primary_key=True, index=True)
     vehicle_id = Column(String(36), index=True)

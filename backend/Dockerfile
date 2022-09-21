@@ -1,27 +1,63 @@
-FROM python:3.10-slim
+# References:
+# - https://sourcery.ai/blog/python-docker/
+# - https://dev.to/mrpbennett/setting-up-docker-with-pipenv-3h1o
+# - https://stackoverflow.com/questions/46503947/how-to-get-pipenv-running-in-docker
 
-# Install requirements
-RUN pip install --no-cache-dir pipenv
+FROM python:3.10-slim as base
 
-WORKDIR /app
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
 
-# Install requirements through pipenv
-COPY Pipfile* ./
-RUN pipenv install --system
-RUN pipenv install uvicorn
+# Displays helpful traceback information if a segfault occurs.
+# See: https://stackoverflow.com/questions/21733856/python-is-there-a-downside-to-using-faulthandler
+ENV PYTHONFAULTHANDLER 1
 
-# Run container as a non-root user for extra security
-RUN adduser --system --no-create-home nonroot
-USER nonroot
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE 1
 
-COPY api/logging.config.ini sample_data/ scripts/load_sample_data.py ./
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED=1
 
-EXPOSE 3000
 
-HEALTHCHECK --interval=5m --timeout=3s \
- CMD curl https://localhost:8000/health -k || exit 1
+FROM base AS python-deps
 
-CMD uvicorn evdata.main:app \
-    --host 0.0.0.0 \
-    --port 3000 \
-    --log-config logging.config.ini
+# Install pipenv
+RUN pip install --no-cache-dir pipenv==2022.9.21 # no-cache-dir to make Docker images smaller
+
+# Install python dependencies in /.venv
+COPY Pipfile .
+COPY Pipfile.lock .
+RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy --ignore-pipfile
+
+
+FROM base AS runtime
+
+# Copy virtual env from python-deps stage
+COPY --from=python-deps /.venv /.venv
+ENV PATH="/.venv/bin:$PATH"
+
+# Install required packages
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y curl=7.74.0-1.3+deb11u3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create and switch to a new user
+RUN useradd --create-home appuser
+WORKDIR /home/appuser
+USER appuser
+
+# Install application into container
+COPY api/ ./api/
+COPY sample_data/ ./sample_data/
+COPY scripts/ ./scripts/
+
+RUN ls -la > ls.txt
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=5m --timeout=5s \
+ CMD curl http://127.0.0.1:8000/health -k || exit 1
+
+WORKDIR /home/appuser/api/
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]
