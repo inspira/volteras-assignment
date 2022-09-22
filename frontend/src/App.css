@@ -29,6 +29,11 @@ select {
   height: 30px;
 }
 
+div.Table {
+  height: 400px;
+  overflow-y: scroll;
+}
+
 th,
 td {
   border: 1px solid black;
@@ -61,7 +66,7 @@ Reference: https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l;
 TODO: move it to a separate CSS file for the table component;
 */
 .styled-table {
-    width: 70%;
+    width: 100%;
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 0.9em;

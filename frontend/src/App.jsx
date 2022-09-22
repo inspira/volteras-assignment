@@ -1,6 +1,7 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import qs from 'qs';
+import Chart from './Chart';
 import Table from './Table';
 
 const columns = [
@@ -17,15 +18,18 @@ const API_PATH = '//localhost:8000/api/v1';
 
 function App() {
   const [vehicleId, setVehicleId] = useState('');
-
   const [data, setData] = useState();
+  const [apiUri, setApiUri] = useState();
   const [error, setError] = useState();
 
   function loadData(vId) {
     const params = { vehicle_id: vId };
     const queryString = qs.stringify(params);
 
-    fetch(`${API_PATH}/vehicle_data/?${queryString}`)
+    const uri = `${API_PATH}/vehicle_data/?${queryString}`;
+    setApiUri(uri);
+
+    fetch(uri)
       .then((response) => {
         if (response.status !== 200) {
           throw new Error(`${response.status} ${response.statusText}`);
@@ -67,11 +71,30 @@ function App() {
           <option value="f212b271-f033-444c-a445-560511f95e9c">f212b271-f033-444c-a445-560511f95e9c</option>
         </select>
       </div>
-      <p>
-        {`Data points for ${selectedVehicleCaption}`}
-      </p>
-      <Table rows={data} columns={columns} />
-      <p>{error}</p>
+      <div>
+        <p>
+          {`Data points for ${selectedVehicleCaption}`}
+        </p>
+        {
+          error && (
+            <p>
+              {error}
+            </p>
+          )
+        }
+      </div>
+      <div className="Table">
+        <Table rows={data} columns={columns} />
+      </div>
+      <div>
+        <p>
+          {/* TODO: We should create a specific API operation for exporting data */}
+          <a href={apiUri} target="_blank" rel="noopener noreferrer" download>Export as JSON</a>
+        </p>
+      </div>
+      <div className="Chart">
+        <Chart data={data} />
+      </div>
     </div>
   );
 }
