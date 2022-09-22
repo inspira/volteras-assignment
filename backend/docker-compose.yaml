@@ -33,7 +33,7 @@ services:
     read_only: true # For security purposes
     tmpfs:
       - /tmp
-      - /run/postgresql
+      - /run
     volumes:
       - postgres_data:/var/lib/postgresql/data:rw
     security_opt:

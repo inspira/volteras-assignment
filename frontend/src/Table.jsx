@@ -5,7 +5,7 @@ import React from 'react';
 
 function Table({ columns, rows }) {
   return (
-    <table>
+    <table className="styled-table">
       <thead>
         <tr>
           {columns.map((column) => <th key={column.accessor}>{column.label}</th>)}

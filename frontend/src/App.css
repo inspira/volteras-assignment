@@ -7,6 +7,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+div.App {
+  width: 90%;
+  margin:0 auto;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -20,9 +25,8 @@ html {
   font-family: sans-serif;
 }
 
-table {
-  width: 100%;
-  border: 1px solid black;
+select {
+  height: 30px;
 }
 
 th,
@@ -50,4 +54,46 @@ input {
   justify-content: space-between;
   border: 1px solid black;
   padding: 0.5rem;
+}
+
+/*
+Reference: https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l;
+TODO: move it to a separate CSS file for the table component;
+*/
+.styled-table {
+    width: 70%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
 }

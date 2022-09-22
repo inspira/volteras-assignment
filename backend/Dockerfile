@@ -27,7 +27,7 @@ RUN pip install --no-cache-dir pipenv==2022.9.21 # no-cache-dir to make Docker i
 # Install python dependencies in /.venv
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy --ignore-pipfile
+RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --dev --deploy --ignore-pipfile
 
 
 FROM base AS runtime
@@ -41,7 +41,7 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y curl=7.74.0-1.3+deb11u3 \
     && rm -rf /var/lib/apt/lists/*
 
-# Create and switch to a new user
+# Create and switch to a new user (for security reasons)
 RUN useradd --create-home appuser
 WORKDIR /home/appuser
 USER appuser
@@ -50,8 +50,6 @@ USER appuser
 COPY api/ ./api/
 COPY sample_data/ ./sample_data/
 COPY scripts/ ./scripts/
-
-RUN ls -la > ls.txt
 
 EXPOSE 8000
 
