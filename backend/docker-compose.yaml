@@ -1,6 +1,28 @@
 version: "3.9"
 
 services:
+  api:
+    build:
+      context: .
+    environment:
+      SQLALCHEMY_DATABASE_URL: postgresql+psycopg2://evdata:evdata@postgres:5432/evdata
+    ports:
+      - "127.0.0.1:8000:8000"
+    read_only: true # For security purposes
+    # The no-new-privileges security_opt prevents privilege escalation via setuid or setgid binaries.
+    # See:
+    # - https://raesene.github.io/blog/2019/06/01/docker-capabilities-and-no-new-privs/
+    # - https://www.kernel.org/doc/Documentation/prctl/no_new_privs.txt
+    # - https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html#rule-4-add-no-new-privileges-flag
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+    networks:
+      - evdata
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:14
     environment:
@@ -8,10 +30,16 @@ services:
       - POSTGRES_PASSWORD=evdata
     networks:
       - evdata
+    read_only: true # For security purposes
+    tmpfs:
+      - /tmp
+      - /run/postgresql
     volumes:
       - postgres_data:/var/lib/postgresql/data:rw
+    security_opt:
+      - no-new-privileges:true
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
 
 volumes:
   postgres_data:

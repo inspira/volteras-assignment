@@ -9,8 +9,11 @@ You will need a Postgres DB instance running. If you have docker, you can start 
 docker-compose up -d
 ```
 
+The command above also creates a container for the app.
+
 If you bring your own database, you will need to change the connection string accordingly, by editing `api/.env`
 
+If you prefer to run the app outside docker, please execute the following commands:
 ```
 cd api
 pipenv install --dev
