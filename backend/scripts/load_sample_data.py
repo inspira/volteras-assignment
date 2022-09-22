@@ -9,12 +9,23 @@ and executes a POST request to the `vehicle_data` API for each data point
 import csv
 import logging
 import pathlib
+import sys
 import requests
-
-API_URI_PREFIX: str = 'http://localhost:8000/api/v1'
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
+
+API_BASE_URI = sys.argv[1]
+if not API_BASE_URI:
+    log.error('Please provide the API base URI (e.g: http://localhost:8000)')
+
+API_URI: str = f'{API_BASE_URI}/api/v1/vehicle_data/'
+
+response = requests.get(API_URI)
+if response.status_code == 200 and len(response.json()) > 1:
+    log.info('Data already loaded. Exiting')
+    sys.exit()
+
 log.info('Starting import')
 
 for filepath in (
@@ -28,7 +39,7 @@ for filepath in (
         for line in reader:
             entry = {'vehicle_id': vehicle_id, **line}
             res = requests.post(
-                f'{API_URI_PREFIX}/vehicle_data/', json=entry, timeout=10)
+                API_URI, json=entry, timeout=10)
             log.info('Data successfully loaded: %s', res)
             if res.status_code != 201:
                 log.error('Error loading entry: %s', entry)

@@ -1,11 +1,15 @@
 version: "3.9"
 
+x-common-env: &common_env
+  SQLALCHEMY_DATABASE_URL: postgresql+psycopg2://evdata:evdata@postgres:5432/evdata
+
 services:
   api:
     build:
       context: .
+      target: app # See Dockerfile
     environment:
-      SQLALCHEMY_DATABASE_URL: postgresql+psycopg2://evdata:evdata@postgres:5432/evdata
+      <<: *common_env
     ports:
       - "127.0.0.1:8000:8000"
     read_only: true # For security purposes
@@ -22,15 +26,30 @@ services:
       - evdata
     depends_on:
       - postgres
+    restart: on-failure
+
+  preload_data:
+    build:
+      context: .
+      target: import_data # See Dockerfile
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - evdata
+    command: ["./scripts/load_sample_data.py", "http://backend-api-1:8000"]
+    depends_on:
+      - api
 
   postgres:
     image: postgres:14
     environment:
       - POSTGRES_USER=evdata
       - POSTGRES_PASSWORD=evdata
+      - POSTGRES_DB=evdata
     networks:
       - evdata
-    read_only: true # For security purposes
+    read_only: true
     tmpfs:
       - /tmp
       - /run
@@ -40,6 +59,7 @@ services:
       - no-new-privileges:true
     ports:
       - "127.0.0.1:5432:5432"
+    restart: on-failure
 
 volumes:
   postgres_data:
