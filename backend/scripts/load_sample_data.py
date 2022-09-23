@@ -23,9 +23,10 @@ if not API_BASE_URI:
 API_URI: str = f'{API_BASE_URI}/api/v1/vehicle_data/'
 
 # Wait until the API is ready for a few times, then give up
-retries = 10
+MAX_RETRIES = 10
+# pylint: disable=invalid-name
 counter = 1
-while counter <= retries:
+while counter <= MAX_RETRIES:
     try:
         response = requests.get(API_URI, timeout=10)
         if response.status_code == 200:
@@ -38,10 +39,11 @@ while counter <= retries:
             break
         raise Exception(
             f'Request failed: {response.status_code} {response.status_text}')
+    # pylint: disable=broad-except
     except Exception:
         log.info('Request to API failed - retry #%s', counter)
-        if retries == counter:
-            log.info(f'API not ready after {retries} retries')
+        if counter == MAX_RETRIES:
+            log.info('API not ready after %s retries', MAX_RETRIES)
             sys.exit()
         counter += 1
         time.sleep(5)

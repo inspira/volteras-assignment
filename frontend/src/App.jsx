@@ -25,6 +25,8 @@ function App() {
 
   // filter
   const [vehicleId, setVehicleId] = useState('');
+  const [fromTimestamp, setFromTimestamp] = useState('');
+  const [toTimestamp, setToTimestamp] = useState('');
 
   // paging
   const [activePage, setActivePage] = useState(1);
@@ -37,6 +39,8 @@ function App() {
   function loadData(vId) {
     const params = {
       vehicle_id: vId,
+      from_timestamp: fromTimestamp,
+      to_timestamp: toTimestamp,
       page_size: rowsPerPage,
       page_index: activePage,
       sort_by: sort.orderBy,
@@ -68,8 +72,8 @@ function App() {
   // React 18 when React.StrictMode is enabled in development mode
   // See also: https://beta.reactjs.org/learn/synchronizing-with-effects
   useEffect(() => {
-    loadData(vehicleId, activePage, sort);
-  }, [vehicleId, activePage, sort]);
+    loadData(vehicleId, activePage, sort, fromTimestamp, toTimestamp);
+  }, [vehicleId, activePage, sort, fromTimestamp, toTimestamp]);
 
   const selectedVehicleCaption = (vehicleId !== '' ? vehicleId : 'all vehicles');
 
@@ -86,14 +90,47 @@ function App() {
             setVehicleId(event.target.value);
             setActivePage(1);
           }}
-          className="Vehicle-Dropdown"
-          name="Vehicle-Dropdown"
         >
           {/* TODO: Retrieve this list from an API */}
           <option value="">All vehicle IDs</option>
           <option value="06ab31a9-b35d-4e47-8e44-9c35feb1bfae">06ab31a9-b35d-4e47-8e44-9c35feb1bfae</option>
           <option value="1bbdf62b-4e52-48c4-8703-5a844d1da912">1bbdf62b-4e52-48c4-8703-5a844d1da912</option>
           <option value="f212b271-f033-444c-a445-560511f95e9c">f212b271-f033-444c-a445-560511f95e9c</option>
+        </select>
+        {/* TODO: Create a timestamp picker component to avoid duplication */}
+        <select
+          value={fromTimestamp}
+          onChange={(event) => {
+            setFromTimestamp(event.target.value);
+            setActivePage(1);
+          }}
+        >
+          <option value="">All timestamps</option>
+          {
+            [16, 17, 18, 19, 20].map((h) => [0, 15, 30, 45].map((m) => {
+              const ts = `2022-07-12 ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:00`;
+              return (
+                <option key={ts} value={ts}>{ts}</option>
+              );
+            }))
+          }
+        </select>
+        <select
+          value={toTimestamp}
+          onChange={(event) => {
+            setToTimestamp(event.target.value);
+            setActivePage(1);
+          }}
+        >
+          <option value="">All timestamps</option>
+          {
+            [16, 17, 18, 19, 20].map((h) => [0, 15, 30, 45].map((m) => {
+              const ts = `2022-07-12 ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:00`;
+              return (
+                <option key={ts} value={ts}>{ts}</option>
+              );
+            }))
+          }
         </select>
       </div>
       <div>

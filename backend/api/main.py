@@ -3,7 +3,6 @@
 Vehicle data API
 """
 import logging
-from datetime import datetime
 from typing import Optional
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -55,8 +54,8 @@ async def get_single_vehicle_data_point(
 # pylint: disable=too-many-arguments
 async def list_vehicle_data_points(
     vehicle_id: Optional[str] = None,
-    from_timestamp: Optional[datetime] = None,
-    to_timestamp: Optional[datetime] = None,
+    from_timestamp: Optional[str] = None,
+    to_timestamp: Optional[str] = None,
     sort_by: Optional[str] = None,
     sort_order: Optional[str] = None,
     page_size: Optional[int] = API_DEFAULT_LISTING_LIMIT,
