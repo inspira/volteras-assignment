@@ -5,7 +5,7 @@ This is a solution for the Take-at-home Challenge as proposed by Volteras.
 ## Observations about the assessment
 
 ### General
-- We've implemented most of the solution in 4 hours (until the [PR #4](https://github.com/thiagoalves/volteras-assignment/pull/4)). Paging, sorting and advanced filtering were implemented in approx. 2 hours more. 
+- We've implemented most of the solution in 4 hours (until the [PR #4](https://github.com/inspira/volteras-assignment/pull/4)). Paging, sorting and advanced filtering were implemented in approx. 2 hours more. 
   - Even with the extra 2 hours, we know there are still many opportunities for improvements. Some of them are mentioned  in this document and also in comments around the code.
 - The code was reviewed internally by our team - some of the comments are in github, the other fixes were made during pair programming.
 - We aimed at building a basic solution in short time (loading data to the database and displaying it on the browser), and from there on we added minor incremental fixes.

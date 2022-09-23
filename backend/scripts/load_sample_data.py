@@ -31,7 +31,8 @@ while counter <= MAX_RETRIES:
         response = requests.get(API_URI, timeout=10)
         if response.status_code == 200:
             # Only perform the import if the table is empty
-            if len(response.json()) >= 1:
+            result = response.json()
+            if len(result['data']) >= 1:
                 log.info('Data already loaded. Exiting')
                 sys.exit()
             # If the API returns 200 OK, but there is no data,
@@ -40,8 +41,8 @@ while counter <= MAX_RETRIES:
         raise Exception(
             f'Request failed: {response.status_code} {response.status_text}')
     # pylint: disable=broad-except
-    except Exception:
-        log.info('Request to API failed - retry #%s', counter)
+    except Exception as exc:
+        log.info('Request to %s failed - retry #%s: [%s]', API_URI, counter, str(exc))
         if counter == MAX_RETRIES:
             log.info('API not ready after %s retries', MAX_RETRIES)
             sys.exit()
