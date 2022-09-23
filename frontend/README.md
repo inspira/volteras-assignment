@@ -5,7 +5,7 @@ This is the React app for the Take-at-home Challenge as proposed by Volteras.
 ## How to execute
 
 Confirm that your node version is `16.17.0 LTS`
-
+(if not, please install it from https://nodejs.org/en/download/ or by using `n`):
 ```
 npm --version
 ```

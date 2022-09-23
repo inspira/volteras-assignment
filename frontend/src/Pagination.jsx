@@ -6,6 +6,7 @@ import React from 'react';
 function Pagination({
   activePage, totalItems, rowsPerPage, setActivePage,
 }) {
+  // TODO: extract method (e.g: const {totalPages, beginning, end} = getPageListLimits(props})
   const totalPages = Math.ceil(totalItems / rowsPerPage);
   const beginning = activePage === 1 ? 1 : rowsPerPage * (activePage - 1) + 1;
   const end = activePage === totalPages ? totalItems : beginning + rowsPerPage - 1;

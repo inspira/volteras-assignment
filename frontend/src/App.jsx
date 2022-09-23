@@ -77,6 +77,7 @@ function App() {
 
   const selectedVehicleCaption = (vehicleId !== '' ? vehicleId : 'all vehicles');
 
+  // TODO: refactor for readability
   const getTimestampOptions = () => [16, 17, 18, 19, 20].map((h) => [0, 15, 30, 45].map((m) => {
     const ts = `2022-07-12 ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:00`;
     return (
