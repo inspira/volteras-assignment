@@ -28,7 +28,7 @@ If you see the error message `TypeError: Failed to fetch` on the top of the page
 npx eslint src --ext .jsx --fix
 ```
 
-TODO: run it as a git commit hook
+TODO: run eslint/prettier as a git commit hook (with husky)
 
 ## Table component
 

@@ -13,6 +13,7 @@ sqlalchemy = "1.4.x"
 black = "*"
 pylint = "*"
 uvicorn = {extras = ["standard"], version = "*"}
+pytest = "*"
 
 [requires]
 python_version = "3.10"

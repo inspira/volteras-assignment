@@ -5,8 +5,8 @@ This is a solution for the Take-at-home Challenge as proposed by Volteras.
 ## Observations about the assessment
 
 ### General
-- We've implemented most of the solution in 4 hours (until the [PR #4](https://github.com/inspira/volteras-assignment/pull/4)). Paging, sorting and advanced filtering were implemented in approx. 2 hours more. 
-  - Even with the extra 2 hours, we know there are still many opportunities for improvements. Some of them are mentioned  in this document and also in comments around the code.
+- We've implemented most of the solution in 4 hours (until the [PR #4](https://github.com/inspira/volteras-assignment/pull/4)). Paging, sorting, advanced filtering and code refactoring were implemented in approx. 3 hours more.
+  - Even with the extra 3 hours, we know there are still many opportunities for improvement. Some of them are mentioned in this document and also in comments around the code.
 - The code was reviewed internally by our team - some of the comments are in github, the other fixes were made during pair programming.
 - We aimed at building a basic solution in short time (loading data to the database and displaying it on the browser), and from there on we added minor incremental fixes.
 - Some of the files were created based on code templates we already had, which saved some time and took care of some non-functional requirements, such as security and maintainability:
@@ -19,12 +19,14 @@ This is a solution for the Take-at-home Challenge as proposed by Volteras.
 ### Front-end
 - There's a lot of space for improvement. We didn't add pagination or sorting during the first 4 hours, due to the time restrictions and this being a more time demanding activity than a complexity driven one. Improvements were added later based on [this post](https://www.taniarascia.com/front-end-tables-sort-filter-paginate/).
 - We could consider using typescript rather than js
+- The chart is displaying speed and elevation over time. When the vehicle_id filter is not applied, it is mixing data from different vehicles. Is this is not the expected behavior, this could be an improvement for the future
 
 ### Backend
 - We put effort on code quality, security, standardization, and not just on functional requirements
 - We could have used a time-series DB (perhaps DynamoDB and InfluxDB), but to keep it simple we opted for the relational DB with SQL Alchemy as described in the FastAPI docs.
   - Despite being relational, since it's a PostgreSQL DB it is easily adaptable (or even already compatible) to Redshift, which could handle huge amounts of data if required
 - The CSV export functionality is pretty basic - we only added it because it took less than 5 min. Ideally we would make an API to generate other formats, and depending on the volume of data, using asynchronous queues
+- We assumed that the `/api/v1/vehicle_data/<id>/` operation is meant to retrieve a data point by its ID, instead of retrieving all data points by a given `vehicle_id`, because it is already possible to achieve this goal by calling the other API (`/api/v1/vehicle_data/`)
 
 # General guidance
 

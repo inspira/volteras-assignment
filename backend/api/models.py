@@ -7,7 +7,7 @@ from datetime import datetime
 from decimal import Decimal
 from enum import Enum
 # pylint: disable=no-name-in-module
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
 
 
@@ -60,3 +60,14 @@ class EvDataEntry(BaseModel):
         See: https://fastapi.tiangolo.com/tutorial/sql-databases/
         """
         orm_mode = True
+
+
+# pylint: disable=too-few-public-methods
+class EvDataEntryPaginatedResponse(BaseModel):
+    """
+    Represents the API return value with pagination info for the frontend
+    """
+    page_index: int
+    page_size: int
+    total_items: int
+    data: List[EvDataEntry]
