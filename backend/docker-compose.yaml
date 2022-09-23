@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.1"
 
 x-common-env: &common_env
   SQLALCHEMY_DATABASE_URL: postgresql+psycopg2://evdata:evdata@postgres:5432/evdata
@@ -37,7 +37,6 @@ services:
       - no-new-privileges:true
     networks:
       - evdata
-    command: ["./scripts/load_sample_data.py", "http://backend-api-1:8000"]
     depends_on:
       - api
 

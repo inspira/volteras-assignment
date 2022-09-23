@@ -68,7 +68,7 @@ COPY scripts/ ./scripts/
 # Target image for the data import script
 FROM runtime as import_data
 
-CMD ["./scripts/load_sample_data.py"]
+CMD ["./scripts/load_sample_data.py", "http://api:8000"]
 
 
 

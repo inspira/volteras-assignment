@@ -10,6 +10,7 @@ import csv
 import logging
 import pathlib
 import sys
+import time
 import requests
 
 logging.basicConfig(level=logging.INFO)
@@ -21,10 +22,30 @@ if not API_BASE_URI:
 
 API_URI: str = f'{API_BASE_URI}/api/v1/vehicle_data/'
 
-response = requests.get(API_URI)
-if response.status_code == 200 and len(response.json()) > 1:
-    log.info('Data already loaded. Exiting')
-    sys.exit()
+# Wait until the API is ready for a few times, then give up
+retries = 10
+counter = 1
+while counter <= retries:
+    try:
+        response = requests.get(API_URI, timeout=10)
+        if response.status_code == 200:
+            # Only perform the import if the table is empty
+            if len(response.json()) >= 1:
+                log.info('Data already loaded. Exiting')
+                sys.exit()
+            # If the API returns 200 OK, but there is no data,
+            # exit the loop and proceed with the import
+            break
+        raise Exception(
+            f'Request failed: {response.status_code} {response.status_text}')
+    except Exception:
+        log.info('Request to API failed - retry #%s', counter)
+        if retries == counter:
+            log.info(f'API not ready after {retries} retries')
+            sys.exit()
+        counter += 1
+        time.sleep(5)
+
 
 log.info('Starting import')
 
