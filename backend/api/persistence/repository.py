@@ -34,7 +34,7 @@ def list_vehicle_data_points(
 
     # We need to confirm if 'vehicle_id' is a sensitive info before adding it to the log
     log.debug(
-        'Retrieving vehicle data points - Timestamps: [%s - %s], Paging: %d %d, Sort %s %s',
+        'Retrieving vehicle data points - Timestamps: [%s - %s], Paging: %s %s, Sort %s %s',
         from_timestamp,
         to_timestamp,
         page_size,

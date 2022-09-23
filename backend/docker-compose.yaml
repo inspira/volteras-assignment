@@ -57,7 +57,7 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:0:5432"  # "0" = binds to a random host port to avoid collison
     restart: on-failure
 
 volumes:
