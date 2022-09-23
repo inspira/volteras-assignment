@@ -52,23 +52,37 @@ async def get_single_vehicle_data_point(
     '/api/v1/vehicle_data/',
     operation_id='list_vehicle_data_points',
 )
+# pylint: disable=too-many-arguments
 async def list_vehicle_data_points(
     vehicle_id: Optional[str] = None,
     from_timestamp: Optional[datetime] = None,
     to_timestamp: Optional[datetime] = None,
-    limit: int = API_DEFAULT_LISTING_LIMIT,
+    sort_by: Optional[str] = None,
+    sort_order: Optional[str] = None,
+    page_size: Optional[int] = API_DEFAULT_LISTING_LIMIT,
+    page_index: Optional[int] = 1,
 ):
     """
     Retrieves a list of generated data for a given vehicle_id, filtered by
     initial and final timestamps (optional). This endpoint should support pagination,
     sorting, and a way to limit the number of data returned.
     """
-    return repository.list_vehicle_data_points(
+    (data, total_items) = repository.list_vehicle_data_points(
         vehicle_id=vehicle_id,
         from_timestamp=from_timestamp,
         to_timestamp=to_timestamp,
-        limit=limit
+        sort_by=sort_by,
+        sort_order=sort_order,
+        page_size=page_size,
+        page_index=page_index,
     )
+
+    return {
+        'page_index': page_index,
+        'page_size': page_size,
+        'total_items': total_items,
+        'data': data,
+    }
 
 
 @app.post(
@@ -93,6 +107,6 @@ def health() -> str:
     """
     repository.list_vehicle_data_points(
         vehicle_id=None,
-        limit=0,
+        page_size=0,
     )
     return 'OK'
