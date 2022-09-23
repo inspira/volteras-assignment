@@ -1,3 +1,7 @@
+/*
+ TODO: split into multiple files to allow component reuse
+*/
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -27,11 +31,7 @@ html {
 
 select {
   height: 30px;
-}
-
-div.Table {
-  height: 400px;
-  overflow-y: scroll;
+  margin-right: 100px;
 }
 
 th,

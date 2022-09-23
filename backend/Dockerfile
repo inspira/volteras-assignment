@@ -77,9 +77,9 @@ FROM runtime as app
 
 EXPOSE 8000
 
-HEALTHCHECK --interval=5m --timeout=5s \
+HEALTHCHECK --interval=30s --timeout=5s \
  CMD curl http://127.0.0.1:8000/health -k || exit 1
 
 WORKDIR /home/appuser/api/
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--log-config", "logging.config.ini"]

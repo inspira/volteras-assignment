@@ -61,3 +61,16 @@ repos:
           - "flake8-mutable"
           - "flake8-print"
           - "flake8-simplify"
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        args:
+          [
+            "--disable=import-error,fixme",
+            "-rn", # Only display messages
+            "-sn", # Don't display the score
+          ]

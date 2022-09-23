@@ -4,16 +4,21 @@ This is the FastAPI app for the Take-at-home Challenge as proposed by Volteras.
 
 ## How to execute
 
-You will need a Postgres DB instance running. If you have docker, you can start a Postgres container by running:
+### Docker
+
+The easiest way to setup the backend is by running it using Docker:
 ```
-docker-compose up -d
+docker-compose up --build -d
 ```
+This command will:
 
-The command above also creates a container for the app.
+- Set up a PostgreSQL database container
+- Build and run the API
+- Load the sample CSV data into the database through the API
 
-If you bring your own database, you will need to change the connection string accordingly, by editing `api/.env`
+### Python / Uvicorn
 
-If you prefer to run the app outside docker, please execute the following commands:
+If you prefer to run the app outside docker, you will need to bring your own database and change the connection string accordingly, by editing `api/.env`. After this step, run the following commands to start the API server:
 ```
 cd api
 pipenv install --dev

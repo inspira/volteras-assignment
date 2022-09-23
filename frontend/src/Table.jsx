@@ -1,14 +1,40 @@
 // Ref: https://www.taniarascia.com/front-end-tables-sort-filter-paginate/
 
 import PropTypes from 'prop-types';
-import React from 'react';
+import { React } from 'react';
 
-function Table({ columns, rows }) {
+const handleSort = (onSort, accessor) => {
+  onSort((prevSort) => ({
+    order: prevSort.order === 'asc' && prevSort.orderBy === accessor ? 'desc' : 'asc',
+    orderBy: accessor,
+  }));
+};
+
+function Table({
+  columns, rows, sort, onSort,
+}) {
   return (
     <table className="styled-table">
       <thead>
         <tr>
-          {columns.map((column) => <th key={column.accessor}>{column.label}</th>)}
+          {columns.map((column) => {
+            const sortIcon = () => {
+              if (column.accessor === sort.orderBy) {
+                if (sort.order === 'asc') {
+                  return '⬆️';
+                }
+                return '⬇️';
+              }
+              return '️↕️';
+            };
+
+            return (
+              <th key={column.accessor}>
+                <span>{column.label}</span>
+                <button type="button" onClick={() => handleSort(onSort, column.accessor)}>{sortIcon()}</button>
+              </th>
+            );
+          })}
         </tr>
       </thead>
       <tbody>
@@ -35,6 +61,11 @@ Table.propTypes = {
     }),
   ).isRequired,
   rows: PropTypes.any,
+  sort: PropTypes.shape({
+    order: PropTypes.string,
+    orderBy: PropTypes.string,
+  }).isRequired,
+  onSort: PropTypes.func.isRequired,
 };
 
 Table.defaultProps = {

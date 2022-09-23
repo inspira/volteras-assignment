@@ -4,6 +4,7 @@ Repository abstraction implemented with sqlalchemy
 Allows for better separation of concerns between the API services and the database logic
 """
 import logging
+from sqlalchemy import desc
 from .models import EvDataPointRecord
 from .database import get_db, create_all
 
@@ -17,11 +18,15 @@ def init_db():
     create_all()
 
 
+# pylint: disable=too-many-arguments
 def list_vehicle_data_points(
-    limit,
     vehicle_id=None,
     from_timestamp=None,
     to_timestamp=None,
+    sort_by=None,
+    sort_order=None,
+    page_size=None,
+    page_index=None,
 ):
     """
     Retrieves vehicle data points from DB, filtering by vehicle_id and initial and final timestamps
@@ -29,10 +34,13 @@ def list_vehicle_data_points(
 
     # We need to confirm if 'vehicle_id' is a sensitive info before adding it to the log
     log.debug(
-        'Retrieving vehicle data points - Timestamps: [%s - %s], Limit: %d',
+        'Retrieving vehicle data points - Timestamps: [%s - %s], Paging: %d %d, Sort %s %s',
         from_timestamp,
         to_timestamp,
-        limit,
+        page_size,
+        page_index,
+        sort_by,
+        sort_order,
     )
 
     try:
@@ -47,7 +55,20 @@ def list_vehicle_data_points(
         if to_timestamp:
             query = query.where(EvDataPointRecord.timestamp <= to_timestamp)
 
-        return query.limit(limit).all()
+        total_items = query.count()
+
+        # Check if sort column exists in the DB schema before sorting
+        if sort_by and hasattr(EvDataPointRecord, sort_by):
+            if sort_order and sort_order.lower() == 'desc':
+                query = query.order_by(desc(sort_by))
+            else:
+                query = query.order_by(sort_by)
+
+        if page_size and page_index and page_size >= 0 and page_index > 0:
+            query = query.offset((page_index - 1) * page_size).limit(page_size)
+
+        data = query.all()
+        return (data, total_items)
     except Exception as exc:
         log.error('Database exception when listing data points: %s', exc)
         db_session.rollback()
