@@ -9,12 +9,44 @@ and executes a POST request to the `vehicle_data` API for each data point
 import csv
 import logging
 import pathlib
+import sys
+import time
 import requests
-
-API_URI_PREFIX: str = 'http://localhost:8000/api/v1'
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
+
+API_BASE_URI = sys.argv[1]
+if not API_BASE_URI:
+    log.error('Please provide the API base URI (e.g: http://localhost:8000)')
+
+API_URI: str = f'{API_BASE_URI}/api/v1/vehicle_data/'
+
+# Wait until the API is ready for a few times, then give up
+retries = 10
+counter = 1
+while counter <= retries:
+    try:
+        response = requests.get(API_URI, timeout=10)
+        if response.status_code == 200:
+            # Only perform the import if the table is empty
+            if len(response.json()) >= 1:
+                log.info('Data already loaded. Exiting')
+                sys.exit()
+            # If the API returns 200 OK, but there is no data,
+            # exit the loop and proceed with the import
+            break
+        raise Exception(
+            f'Request failed: {response.status_code} {response.status_text}')
+    except Exception:
+        log.info('Request to API failed - retry #%s', counter)
+        if retries == counter:
+            log.info(f'API not ready after {retries} retries')
+            sys.exit()
+        counter += 1
+        time.sleep(5)
+
+
 log.info('Starting import')
 
 for filepath in (
@@ -28,7 +60,7 @@ for filepath in (
         for line in reader:
             entry = {'vehicle_id': vehicle_id, **line}
             res = requests.post(
-                f'{API_URI_PREFIX}/vehicle_data/', json=entry, timeout=10)
+                API_URI, json=entry, timeout=10)
             log.info('Data successfully loaded: %s', res)
             if res.status_code != 201:
                 log.error('Error loading entry: %s', entry)

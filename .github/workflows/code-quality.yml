@@ -20,7 +20,7 @@ jobs:
         pipenv install pylint
     - name: Analysing the code with pylint
       run: |
-        pipenv run pylint --disable=import-error $(git ls-files '*.py')
+        pipenv run pylint --disable=import-error,fixme $(git ls-files '*.py')
 
   semgrep:
     name: Semgrep scan

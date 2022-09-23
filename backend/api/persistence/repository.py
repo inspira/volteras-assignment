@@ -5,10 +5,16 @@ Allows for better separation of concerns between the API services and the databa
 """
 import logging
 from .models import EvDataPointRecord
-from .database import SessionLocal
+from .database import get_db, create_all
 
 log = logging.getLogger(__name__)
-db = SessionLocal()
+
+
+def init_db():
+    """
+    Ensures that the db schema is created
+    """
+    create_all()
 
 
 def list_vehicle_data_points(
@@ -29,17 +35,25 @@ def list_vehicle_data_points(
         limit,
     )
 
-    query = db.query(EvDataPointRecord)
+    try:
+        db_session = get_db()
+        query = db_session.query(EvDataPointRecord)
 
-    if vehicle_id:
-        query = query.where(EvDataPointRecord.vehicle_id == vehicle_id)
+        if vehicle_id:
+            query = query.where(EvDataPointRecord.vehicle_id == vehicle_id)
 
-    if from_timestamp:
-        query = query.where(EvDataPointRecord.timestamp >= from_timestamp)
-    if to_timestamp:
-        query = query.where(EvDataPointRecord.timestamp <= to_timestamp)
+        if from_timestamp:
+            query = query.where(EvDataPointRecord.timestamp >= from_timestamp)
+        if to_timestamp:
+            query = query.where(EvDataPointRecord.timestamp <= to_timestamp)
 
-    return query.limit(limit).all()
+        return query.limit(limit).all()
+    except Exception as exc:
+        log.error('Database exception when listing data points: %s', exc)
+        db_session.rollback()
+        raise
+    finally:
+        db_session.close()
 
 
 def get_vehicle_data_point(
@@ -48,9 +62,17 @@ def get_vehicle_data_point(
     """
     Retrieves a single data point for a vehicle
     """
-    query = db.query(EvDataPointRecord)
-    row = query.get(data_point_id)
-    return row
+    try:
+        db_session = get_db()
+        query = db_session.query(EvDataPointRecord)
+        row = query.get(data_point_id)
+        return row
+    except Exception as exc:
+        log.error('Database exception when getting data point: %s', exc)
+        db_session.rollback()
+        raise
+    finally:
+        db_session.close()
 
 
 def save_vehicle_data_point(entry):
@@ -60,5 +82,13 @@ def save_vehicle_data_point(entry):
     log.debug('Saving vehicle data point into DB')
 
     record = EvDataPointRecord(**entry.dict())
-    db.add(record)
-    db.commit()
+    try:
+        db_session = get_db()
+        db_session.add(record)
+        db_session.commit()
+    except Exception as exc:
+        log.error('Database exception when saving data point: %s', exc)
+        db_session.rollback()
+        raise
+    finally:
+        db_session.close()

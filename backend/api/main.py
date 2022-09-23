@@ -30,6 +30,8 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
+repository.init_db()
+
 
 @app.get(
     '/api/v1/vehicle_data/{data_point_id}',

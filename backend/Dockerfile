@@ -3,6 +3,9 @@
 # - https://dev.to/mrpbennett/setting-up-docker-with-pipenv-3h1o
 # - https://stackoverflow.com/questions/46503947/how-to-get-pipenv-running-in-docker
 
+
+
+# Base image with sane env settings
 FROM python:3.10-slim as base
 
 ENV LANG C.UTF-8
@@ -19,6 +22,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED=1
 
 
+
+# Temp image with apt/python/pip dependencies
 FROM base AS python-deps
 
 # Install pipenv
@@ -27,21 +32,28 @@ RUN pip install --no-cache-dir pipenv==2022.9.21 # no-cache-dir to make Docker i
 # Install python dependencies in /.venv
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy --ignore-pipfile
+
+# TODO: remove `--dev` when used in production
+# See https://fastapi.tiangolo.com/deployment/manually/?h=uvicorn
+# and https://fastapi.tiangolo.com/deployment/docker/?h=uvicorn#build-a-docker-image-for-fastapi
+RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --dev --deploy --ignore-pipfile
 
 
+
+# Temp image with the virtualenv required for the runtime and the non-root user
+# As well as the app code for execution
 FROM base AS runtime
+
+# Install curl for healthcheck and debug
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y curl=7.74.0-1.3+deb11u3 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy virtual env from python-deps stage
 COPY --from=python-deps /.venv /.venv
 ENV PATH="/.venv/bin:$PATH"
 
-# Install required packages
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y curl=7.74.0-1.3+deb11u3 \
-    && rm -rf /var/lib/apt/lists/*
-
-# Create and switch to a new user
+# Create and switch to a new user (for security reasons)
 RUN useradd --create-home appuser
 WORKDIR /home/appuser
 USER appuser
@@ -51,7 +63,17 @@ COPY api/ ./api/
 COPY sample_data/ ./sample_data/
 COPY scripts/ ./scripts/
 
-RUN ls -la > ls.txt
+
+
+# Target image for the data import script
+FROM runtime as import_data
+
+CMD ["./scripts/load_sample_data.py", "http://api:8000"]
+
+
+
+# Target image for the final app server
+FROM runtime as app
 
 EXPOSE 8000
 
