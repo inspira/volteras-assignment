@@ -18,20 +18,29 @@ const columns = [
 const API_PATH = '//localhost:8000/api/v1';
 
 function App() {
-  const [vehicleId, setVehicleId] = useState('');
+  // api calls
   const [data, setData] = useState();
   const [apiUri, setApiUri] = useState();
   const [error, setError] = useState();
 
+  // filter
+  const [vehicleId, setVehicleId] = useState('');
+
+  // paging
   const [activePage, setActivePage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const rowsPerPage = 10;
+
+  // sorting
+  const [sort, setSort] = useState({ order: 'asc', orderBy: 'timestamp' });
 
   function loadData(vId) {
     const params = {
       vehicle_id: vId,
       page_size: rowsPerPage,
       page_index: activePage,
+      sort_by: sort.orderBy,
+      sort_order: sort.order,
     };
     const queryString = qs.stringify(params);
 
@@ -59,8 +68,8 @@ function App() {
   // React 18 when React.StrictMode is enabled in development mode
   // See also: https://beta.reactjs.org/learn/synchronizing-with-effects
   useEffect(() => {
-    loadData(vehicleId, activePage);
-  }, [vehicleId, activePage]);
+    loadData(vehicleId, activePage, sort);
+  }, [vehicleId, activePage, sort]);
 
   const selectedVehicleCaption = (vehicleId !== '' ? vehicleId : 'all vehicles');
 
@@ -100,7 +109,7 @@ function App() {
         }
       </div>
       <div className="Table">
-        <Table rows={data} columns={columns} />
+        <Table rows={data} columns={columns} sort={sort} onSort={setSort} />
         <Pagination
           activePage={activePage}
           totalItems={totalItems}
