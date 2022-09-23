@@ -27,10 +27,7 @@ function Pagination({
         </button>
       </div>
       <p>
-        Page {activePage} of {totalPages}
-      </p>
-      <p>
-        Rows: {beginning === end ? end : `${beginning} - ${end}`} of {totalItems}
+        Page {activePage} of {totalPages} - Rows: {beginning === end ? end : `${beginning} - ${end}`} of {totalItems}
       </p>
     </>
   );

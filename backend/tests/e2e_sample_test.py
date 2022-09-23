@@ -2,6 +2,7 @@
 
 """
 Sample E2E test
+TODO: tests for paging, sorting and filtering
 """
 
 from urllib.parse import urljoin

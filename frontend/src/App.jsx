@@ -77,6 +77,13 @@ function App() {
 
   const selectedVehicleCaption = (vehicleId !== '' ? vehicleId : 'all vehicles');
 
+  const getTimestampOptions = () => [16, 17, 18, 19, 20].map((h) => [0, 15, 30, 45].map((m) => {
+    const ts = `2022-07-12 ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:00`;
+    return (
+      <option key={ts} value={ts}>{ts}</option>
+    );
+  }));
+
   return (
     <div className="App">
       <header className="App-header">
@@ -106,14 +113,7 @@ function App() {
           }}
         >
           <option value="">All timestamps</option>
-          {
-            [16, 17, 18, 19, 20].map((h) => [0, 15, 30, 45].map((m) => {
-              const ts = `2022-07-12 ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:00`;
-              return (
-                <option key={ts} value={ts}>{ts}</option>
-              );
-            }))
-          }
+          {getTimestampOptions()}
         </select>
         <select
           value={toTimestamp}
@@ -123,14 +123,7 @@ function App() {
           }}
         >
           <option value="">All timestamps</option>
-          {
-            [16, 17, 18, 19, 20].map((h) => [0, 15, 30, 45].map((m) => {
-              const ts = `2022-07-12 ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:00`;
-              return (
-                <option key={ts} value={ts}>{ts}</option>
-              );
-            }))
-          }
+          {getTimestampOptions()}
         </select>
       </div>
       <div>
@@ -139,9 +132,9 @@ function App() {
         </p>
         {
           error && (
-            <p>
+            <strong>
               {error}
-            </p>
+            </strong>
           )
         }
       </div>
@@ -153,11 +146,6 @@ function App() {
           rowsPerPage={rowsPerPage}
           setActivePage={setActivePage}
         />
-        <p>
-          activePage={activePage}<br />
-          totalItems={totalItems}<br />
-          rowsPerPage={rowsPerPage}
-        </p>
       </div>
       <div>
         <p>
