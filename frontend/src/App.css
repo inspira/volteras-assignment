@@ -29,11 +29,6 @@ select {
   height: 30px;
 }
 
-div.Table {
-  height: 400px;
-  overflow-y: scroll;
-}
-
 th,
 td {
   border: 1px solid black;

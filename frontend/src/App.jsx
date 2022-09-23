@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import qs from 'qs';
 import Chart from './Chart';
 import Table from './Table';
+import Pagination from './Pagination';
 
 const columns = [
   { accessor: 'timestamp', label: 'Timestamp' },
@@ -22,8 +23,16 @@ function App() {
   const [apiUri, setApiUri] = useState();
   const [error, setError] = useState();
 
+  const [activePage, setActivePage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const rowsPerPage = 10;
+
   function loadData(vId) {
-    const params = { vehicle_id: vId };
+    const params = {
+      vehicle_id: vId,
+      page_size: rowsPerPage,
+      page_index: activePage,
+    };
     const queryString = qs.stringify(params);
 
     const uri = `${API_PATH}/vehicle_data/?${queryString}`;
@@ -34,9 +43,13 @@ function App() {
         if (response.status !== 200) {
           throw new Error(`${response.status} ${response.statusText}`);
         }
-        return response.json();
+        const bodyObj = response.json();
+        return bodyObj;
       })
-      .then((jsonData) => setData(jsonData))
+      .then((jsonData) => {
+        setData(jsonData.data);
+        setTotalItems(jsonData.total_items);
+      })
       .catch((err) => {
         setError(`${err}`);
       });
@@ -46,8 +59,8 @@ function App() {
   // React 18 when React.StrictMode is enabled in development mode
   // See also: https://beta.reactjs.org/learn/synchronizing-with-effects
   useEffect(() => {
-    loadData(vehicleId);
-  }, [vehicleId]);
+    loadData(vehicleId, activePage);
+  }, [vehicleId, activePage]);
 
   const selectedVehicleCaption = (vehicleId !== '' ? vehicleId : 'all vehicles');
 
@@ -60,7 +73,10 @@ function App() {
         {/* TODO: Encapsulate this dropdown in a component */}
         <select
           value={vehicleId}
-          onChange={(event) => setVehicleId(event.target.value)}
+          onChange={(event) => {
+            setVehicleId(event.target.value);
+            setActivePage(1);
+          }}
           className="Vehicle-Dropdown"
           name="Vehicle-Dropdown"
         >
@@ -85,6 +101,17 @@ function App() {
       </div>
       <div className="Table">
         <Table rows={data} columns={columns} />
+        <Pagination
+          activePage={activePage}
+          totalItems={totalItems}
+          rowsPerPage={rowsPerPage}
+          setActivePage={setActivePage}
+        />
+        <p>
+          activePage={activePage}<br />
+          totalItems={totalItems}<br />
+          rowsPerPage={rowsPerPage}
+        </p>
       </div>
       <div>
         <p>

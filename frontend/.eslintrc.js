@@ -23,5 +23,6 @@ module.exports = {
   ],
   rules: {
     'react/forbid-prop-types': 0, // Required by the Table component
+    "react/jsx-one-expression-per-line": "off",
   },
 };
