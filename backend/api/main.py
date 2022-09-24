@@ -11,9 +11,9 @@ from config import API_DEFAULT_LISTING_LIMIT, ALLOWED_ORIGINS
 from models import EvDataEntry, EvDataEntryPaginatedResponse
 from persistence.repository import Repository
 from persistence import get_repository
-from persistence.database import init_db
+from persistence.database import Base, engine
 
-init_db()
+Base.metadata.create_all(bind=engine)
 
 log = logging.getLogger(__name__)
 

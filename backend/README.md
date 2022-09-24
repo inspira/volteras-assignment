@@ -50,3 +50,8 @@ From python:
 ```
 SQLALCHEMY_DATABASE_URL="postgresql+psycopg2://evdata:evdata@postgres:5433/evdata_e2e_test" pipenv run pytest
 ```
+
+If you want to use sqlite instead:
+```
+SQLALCHEMY_DATABASE_URL="sqlite:////tmp/test.db" pipenv run pytest
+```

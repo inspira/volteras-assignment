@@ -7,7 +7,15 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from config import SQLALCHEMY_DATABASE_URL
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+# See https://fastapi.tiangolo.com/tutorial/sql-databases/ for details
+
+connect_args={}
+
+if SQLALCHEMY_DATABASE_URL.find('sqlite') != -1:
+    connect_args["check_same_thread"] = False
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args=connect_args)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
@@ -18,9 +26,3 @@ def get_db_session():
     """
     db_session = SessionLocal()
     return db_session
-
-def init_db():
-    """
-    Creates the database schema if it is not initialized
-    """
-    Base.metadata.create_all(bind=engine)

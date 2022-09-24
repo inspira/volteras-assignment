@@ -19,8 +19,8 @@ class SqlAlchemyRepository(Repository):
 
     db_session: Session = None
 
-    def __init__(self, db):
-        self.db_session = db
+    def __init__(self, db_session_arg):
+        self.db_session = db_session_arg
         super()
 
     # pylint: disable=too-many-arguments
