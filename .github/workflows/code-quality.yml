@@ -16,11 +16,13 @@ jobs:
         python-version: "3.10"
     - name: Install dependencies
       run: |
+        cd backend
         python -m pip install pipenv
         pipenv install pylint
     - name: Analysing the code with pylint
       run: |
-        pipenv run pylint --disable=import-error,fixme $(git ls-files '*.py')
+        cd backend
+        pipenv run pylint $(git ls-files '*.py')
 
   semgrep:
     name: Semgrep scan
@@ -61,3 +63,23 @@ jobs:
     - name: display kics results
       run: |
         cat results/results.json
+
+  e2e_tests:
+    name: End to end tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        cd backend/api
+        python -m pip install pipenv
+        pipenv install pytest
+    - name: Run the tests
+      run: |
+        cd backend/api
+        SQLALCHEMY_DATABASE_URL="sqlite:////tmp/test.db" pipenv run pytest

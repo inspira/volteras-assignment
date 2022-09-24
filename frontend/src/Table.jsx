@@ -17,6 +17,7 @@ function Table({
     <table className="styled-table">
       <thead>
         <tr>
+          {/* TODO: extract method */}
           {columns.map((column) => {
             const sortIcon = () => {
               if (column.accessor === sort.orderBy) {
