@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 fastapi = "0.85.x"
 psycopg2-binary = "2.9.x"
-requests = "2.28.x"
+requests = "2.31.0"
 sqlalchemy = "1.4.x"
 
 [dev-packages]
